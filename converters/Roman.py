@@ -1,7 +1,7 @@
-
 from singleton_decorator import singleton
 
 import re
+
 
 @singleton
 class Roman:
@@ -18,13 +18,14 @@ class Roman:
     IIs  -> two's
     II.  -> two
     """
+
     def __init__(self):
         super().__init__()
         # Regex out non-roman numerals
         self.roman_filter_strict_regex = re.compile("[^IVXLCDM]")
         # Regex to detect roman numerals
         self.roman_filter_regex = re.compile(r"[.IVXLCDM]+(th|nd|st|rd|'s|s)?")
-    
+
         # Roman Numeral value dict
         self.roman_numerals = {
             "I": 1,
@@ -33,7 +34,7 @@ class Roman:
             "L": 50,
             "C": 100,
             "D": 500,
-            "M": 1000
+            "M": 1000,
         }
 
     def convert(self, token: str) -> (str, str):
@@ -44,22 +45,22 @@ class Roman:
         suffix = ""
         if token[-1:] == "s":
             suffix = "'s"
-        
+
         # 3 Apply strict filtering to remove ".", "'" and "s"
         token = self.roman_filter_strict_regex.sub("", token)
 
         # 4 We loop over the token in reverse, constantly either adding or subtracting the value represented
-        # by the character, based on previous tokens. 
+        # by the character, based on previous tokens.
         total = 0
         prev = 0
         for c in reversed(token):
             cur = self.roman_numerals[c]
             total += cur if cur >= prev else -cur
             prev = cur
-        
-        # 5 Convert the integer to a string so other converters can use the value 
+
+        # 5 Convert the integer to a string so other converters can use the value
         return (str(total), suffix)
-    
+
     def check_if_roman(self, token: str) -> bool:
         # Check whether the largest section of the token is deemed a roman numeral
         return self.roman_filter_regex.fullmatch(max(token.split(" "), key=len)) != None

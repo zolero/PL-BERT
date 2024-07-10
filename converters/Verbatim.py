@@ -1,7 +1,7 @@
-
 from singleton_decorator import singleton
 
 import re
+
 
 @singleton
 class Verbatim:
@@ -15,24 +15,25 @@ class Verbatim:
     Edge Cases:
     "#" -> "number" (accounts for 94.986% of cases)
     "#" -> "hash"   (accounts for  5.014% of cases)
-    
+
     Note:
     ".6-cM" -> "dot s i x d a s h c m"
-    Interestingly, a dash becomes "d a s h", while a dot becomes "dot". 
+    Interestingly, a dash becomes "d a s h", while a dot becomes "dot".
     Also, numbers are converted to cardinals and then each character is space padded.
     Kind of strange, honestly.
 
     Missed Cases:
-    "florida" -> "florida" 
+    "florida" -> "florida"
     Occurs a surprising 53 times, breaking the rules that you would expect from something of the "VERBATIM" class.
     The same can be found with "nevada" and "minnesota".
-    
+
     "#" is always converted to "number".
-    
-    "20033" -> "two o o three three" 
-    19 times a 5 character digit is converted via digit rules according to the data, 
+
+    "20033" -> "two o o three three"
+    19 times a 5 character digit is converted via digit rules according to the data,
     rather than via the verbatim rules (where 6 -> "s i x")
     """
+
     def __init__(self):
         super().__init__()
 
@@ -40,7 +41,6 @@ class Verbatim:
         self.trans_dict = {
             # Words
             "feet": "feet",
-
             # Characters
             "&": "and",
             "_": "underscore",
@@ -50,14 +50,12 @@ class Verbatim:
             "£": "pound",
             "~": "tilde",
             "%": "percent",
-
             # Math related
             "²": "squared",
             "³": "cubed",
             "×": "times",
             "=": "equals",
             ">": "greater than",
-
             # Greek
             "α": "alpha",
             "Α": "alpha",
@@ -110,18 +108,16 @@ class Verbatim:
             "Ψ": "psi",
             "ω": "omega",
             "Ω": "omega",
-
             # Measurement
-            "µ": "micro"
+            "µ": "micro",
         }
 
-        # Translation dict for converting numbers to the desired format, 
+        # Translation dict for converting numbers to the desired format,
         # without having to use the Cardinal conversion.
         # Includes . -> "dot" for convenience.
         self.trans_ordinal_dict = {
             ".": "dot",
             "-": "d a s h",
-
             "0": "o",
             "1": "o n e",
             "2": "t w o",
@@ -131,7 +127,7 @@ class Verbatim:
             "6": "s i x",
             "7": "s e v e n",
             "8": "e i g h t",
-            "9": "n i n e"
+            "9": "n i n e",
         }
 
     def convert(self, token: str) -> str:

@@ -1,10 +1,10 @@
-
 from singleton_decorator import singleton
 
 import re, os
 
 from .Cardinal import Cardinal
 from .Digit import Digit
+
 
 @singleton
 class Money:
@@ -69,6 +69,7 @@ class Money:
         DKK 1.03           one danish krone and three ore             one point o three danish kroner
 
     """
+
     def __init__(self):
         super().__init__()
         # Regex to detect input of the sort "x.y" or ".y"
@@ -82,74 +83,54 @@ class Money:
         # In a perfect world this dict would contain all currencies
         self.currencies = {
             "$": {
-                "number":{
-                    "singular": "dollar",
-                    "plural":   "dollars"
-                },
-                "decimal":{
-                    "singular": "cent",
-                    "plural":   "cents"
-                }
+                "number": {"singular": "dollar", "plural": "dollars"},
+                "decimal": {"singular": "cent", "plural": "cents"},
             },
             "usd": {
-                "number":{
+                "number": {
                     "singular": "united states dollar",
-                    "plural":   "united states dollars"
+                    "plural": "united states dollars",
                 },
-                "decimal":{
-                    "singular": "cent",
-                    "plural":   "cents"
-                }
+                "decimal": {"singular": "cent", "plural": "cents"},
             },
             "€": {
-                "number":{
-                    "singular": "euro",
-                    "plural":   "euros"
-                },
-                "decimal":{
-                    "singular": "cent",
-                    "plural":   "cents"
-                }
+                "number": {"singular": "euro", "plural": "euros"},
+                "decimal": {"singular": "cent", "plural": "cents"},
             },
             "£": {
-                "number":{
-                    "singular": "pound",
-                    "plural":   "pounds"
-                },
-                "decimal":{
-                    "singular": "penny",
-                    "plural":   "pence"
-                }
-            }
+                "number": {"singular": "pound", "plural": "pounds"},
+                "decimal": {"singular": "penny", "plural": "pence"},
+            },
         }
 
         # Suffixes for currencies
         with open(os.path.join(os.path.dirname(__file__), "money.json"), "r") as f:
             import json
+
             self.currencies = {**json.load(f), **self.currencies}
 
         # List of potential suffixes
         self.suffixes = [
             "lakh",
             "crore",
-            "thousand", 
-            "million", 
-            "billion", 
-            "trillion", 
-            "quadrillion", 
-            "quintillion", 
-            "sextillion", 
-            "septillion", 
-            "octillion", 
-            "undecillion", 
-            "tredecillion", 
-            "quattuordecillion", 
-            "quindecillion", 
-            "sexdecillion", 
-            "septendecillion", 
-            "octodecillion", 
-            "novemdecillion", 
-            "vigintillion"
+            "thousand",
+            "million",
+            "billion",
+            "trillion",
+            "quadrillion",
+            "quintillion",
+            "sextillion",
+            "septillion",
+            "octillion",
+            "undecillion",
+            "tredecillion",
+            "quattuordecillion",
+            "quindecillion",
+            "sexdecillion",
+            "septendecillion",
+            "octodecillion",
+            "novemdecillion",
+            "vigintillion",
         ]
 
         # Dict of abbreviated suffixes, or other suffixes that need transformations
@@ -159,20 +140,25 @@ class Money:
             "bn": "billion",
             "b": "billion",
             "t": "trillion",
-            
             "cr": "crore",
             "crores": "crore",
             "lakhs": "lakh",
-            "lacs": "lakh"
+            "lacs": "lakh",
         }
 
         # Regular expression to detect the suffixes
-        #self.suffix_regex = re.compile(f"({'|'.join( sorted(self.suffixes + list(self.abbr_suffixes.keys()), key=len, reverse=True) )})(.*)", flags=re.I)
-        self.suffix_regex = re.compile(f"(quattuordecillion|septendecillion|novemdecillion|quindecillion|octodecillion|tredecillion|sexdecillion|vigintillion|quadrillion|quintillion|undecillion|sextillion|septillion|octillion|thousand|trillion|million|billion|crores|crore|lakhs|lakh|lacs|bn|cr|k|m|b|t)(.*)", flags=re.I)
-        
+        # self.suffix_regex = re.compile(f"({'|'.join( sorted(self.suffixes + list(self.abbr_suffixes.keys()), key=len, reverse=True) )})(.*)", flags=re.I)
+        self.suffix_regex = re.compile(
+            f"(quattuordecillion|septendecillion|novemdecillion|quindecillion|octodecillion|tredecillion|sexdecillion|vigintillion|quadrillion|quintillion|undecillion|sextillion|septillion|octillion|thousand|trillion|million|billion|crores|crore|lakhs|lakh|lacs|bn|cr|k|m|b|t)(.*)",
+            flags=re.I,
+        )
+
         # Instead of using a regex generated using self.decimal_currencies and self.number_currencies, a manual version is used, as the generated version uses unescaped "." and "$".
-        #self.suffix_regex = re.compile(r"(quattuordecillion|septendecillion|novemdecillion|quindecillion|octodecillion|tredecillion|sexdecillion|vigintillion|quadrillion|quintillion|undecillion|sextillion|septillion|octillion|thousand|trillion|million|billion|crores|crore|lakhs|lakh|lacs|bn|cr|k|m|b|t)")
-        self.currency_regex = re.compile(r"(.*?)(dollar|usd|rs\.|r\$|aed|afn|all|amd|ang|aoa|ars|aud|awg|azn|bam|bbd|bdt|bgn|bhd|bif|bmd|bnd|bob|brl|bsd|btc|btn|bwp|byn|bzd|cad|cdf|chf|clf|clp|cnh|cny|cop|crc|cuc|cup|cve|czk|djf|dkk|dop|dzd|egp|ern|etb|eur|fjd|fkp|gbp|gel|ggp|ghs|gip|gmd|gnf|gtq|gyd|hkd|hnl|hrk|htg|huf|idr|ils|imp|inr|iqd|irr|isk|jep|jmd|jod|jpy|kes|kgs|khr|kmf|kpw|krw|kwd|kyd|kzt|lak|lbp|lkr|lrd|lsl|lyd|mad|mdl|mga|mkd|mmk|mnt|mop|mro|mru|mur|mvr|mwk|mxn|myr|mzn|nad|ngn|nio|nok|npr|nzd|omr|pab|pen|pgk|php|pkr|pln|pyg|qar|ron|rsd|rub|rwf|sar|sbd|scr|sdg|sek|sgd|shp|sll|sos|srd|ssp|std|stn|svc|syp|szl|thb|tjs|tmt|tnd|top|try|ttd|twd|tzs|uah|ugx|usd|uyu|uzs|vef|vnd|vuv|wst|xaf|xag|xau|xcd|xdr|xof|xpd|xpf|xpt|yer|zar|zmw|zwl|fim|bef|cyp|ats|ltl|zl|u\$s|rs|tk|r$|dm|\$|€|£|¥)(.*?)", flags=re.I)
+        # self.suffix_regex = re.compile(r"(quattuordecillion|septendecillion|novemdecillion|quindecillion|octodecillion|tredecillion|sexdecillion|vigintillion|quadrillion|quintillion|undecillion|sextillion|septillion|octillion|thousand|trillion|million|billion|crores|crore|lakhs|lakh|lacs|bn|cr|k|m|b|t)")
+        self.currency_regex = re.compile(
+            r"(.*?)(dollar|usd|rs\.|r\$|aed|afn|all|amd|ang|aoa|ars|aud|awg|azn|bam|bbd|bdt|bgn|bhd|bif|bmd|bnd|bob|brl|bsd|btc|btn|bwp|byn|bzd|cad|cdf|chf|clf|clp|cnh|cny|cop|crc|cuc|cup|cve|czk|djf|dkk|dop|dzd|egp|ern|etb|eur|fjd|fkp|gbp|gel|ggp|ghs|gip|gmd|gnf|gtq|gyd|hkd|hnl|hrk|htg|huf|idr|ils|imp|inr|iqd|irr|isk|jep|jmd|jod|jpy|kes|kgs|khr|kmf|kpw|krw|kwd|kyd|kzt|lak|lbp|lkr|lrd|lsl|lyd|mad|mdl|mga|mkd|mmk|mnt|mop|mro|mru|mur|mvr|mwk|mxn|myr|mzn|nad|ngn|nio|nok|npr|nzd|omr|pab|pen|pgk|php|pkr|pln|pyg|qar|ron|rsd|rub|rwf|sar|sbd|scr|sdg|sek|sgd|shp|sll|sos|srd|ssp|std|stn|svc|syp|szl|thb|tjs|tmt|tnd|top|try|ttd|twd|tzs|uah|ugx|usd|uyu|uzs|vef|vnd|vuv|wst|xaf|xag|xau|xcd|xdr|xof|xpd|xpf|xpt|yer|zar|zmw|zwl|fim|bef|cyp|ats|ltl|zl|u\$s|rs|tk|r$|dm|\$|€|£|¥)(.*?)",
+            flags=re.I,
+        )
 
         # Cardinal and Digit conversion
         self.cardinal = Cardinal()
@@ -186,7 +172,7 @@ class Money:
         # Before and After track sections before and after a number respectively
         before = ""
         after = ""
-        
+
         # Currency will be a dict for the currency
         currency = None
 
@@ -208,7 +194,7 @@ class Money:
             number = match.group(3)[::-1]
             decimal = match.group(2)[::-1]
             after = match.group(1)[::-1]
-        
+
         else:
             # 3 Otherwise, try to match an integer
             match = self.number_regex.search(token)
@@ -216,7 +202,7 @@ class Money:
                 before = match.group(1)
                 number = match.group(2)
                 after = match.group(3)
-        
+
         # 4 Check the text before the number for a currency
         if before:
             before = before.lower()
@@ -232,7 +218,9 @@ class Money:
             match = self.suffix_regex.match(after)
             if match:
                 scale = match.group(1).lower()
-                scale = self.abbr_suffixes[scale] if scale in self.abbr_suffixes else scale
+                scale = (
+                    self.abbr_suffixes[scale] if scale in self.abbr_suffixes else scale
+                )
                 after = match.group(2)
 
             # 5.2 Match from start of after, no case, try to find currencies
@@ -246,7 +234,7 @@ class Money:
 
         result_list = []
         if decimal_support and not scale:
-            # 6 If the current currency has decimal support and there is no scale like million, 
+            # 6 If the current currency has decimal support and there is no scale like million,
             # then we want to output like "x euro y cents"
 
             # Only output number if:
@@ -256,7 +244,9 @@ class Money:
             #   Number is 0 but there is no decimal
             if number and (number != "0" or not decimal):
                 result_list.append(self.cardinal.convert(number))
-                result_list.append(currency["number"]["singular" if number == "1" else "plural"])
+                result_list.append(
+                    currency["number"]["singular" if number == "1" else "plural"]
+                )
                 if decimal and decimal != "0" * len(decimal):
                     result_list.append("and")
             # If a decimal exists and it's not just 0's, then pad it to length 2 and add the cardinal representation of the value
@@ -265,8 +255,10 @@ class Money:
                 # Pad decimal to length 2. "5" -> "50"
                 decimal = f"{decimal:0<2}"
                 result_list.append(self.cardinal.convert(decimal))
-                result_list.append(currency["decimal"]["singular" if decimal == "01" else "plural"])
-        
+                result_list.append(
+                    currency["decimal"]["singular" if decimal == "01" else "plural"]
+                )
+
         else:
             # 7 Is there is a scale or no decimal support, output should be like "one point two million dollars"
             if number:
@@ -287,7 +279,7 @@ class Money:
                     result_list.append(currency["singular"])
                 else:
                     result_list.append(currency["plural"])
-        
+
         # 8 Append a potentially remaining "after"
         if after:
             result_list.append(after.lower())

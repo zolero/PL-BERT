@@ -1,10 +1,10 @@
-
 from singleton_decorator import singleton
 
 import re
 
 from .Cardinal import Cardinal
 from .Digit import Digit
+
 
 @singleton
 class Electronic:
@@ -16,7 +16,7 @@ class Electronic:
     - 4 Iterate over token
       - 4.1 If the token starts with "http(s)://", and ".com" is encountered, add "dot com"
       - 4.2 Use digit or cardinal conversion to convert numbers
-      - 4.3 Or add non-numeric characters using the right translation directory, 
+      - 4.3 Or add non-numeric characters using the right translation directory,
             depending on whether the token starts with "http(s)://"
 
     Steps (sensible):
@@ -33,6 +33,7 @@ class Electronic:
     "#Text" -> "hash tag text"
 
     """
+
     def __init__(self):
         super().__init__()
         # Translation dict for URL sections
@@ -42,9 +43,7 @@ class Electronic:
             ".": "dot",
             "#": "hash",
             "-": "dash",
-
             "é": "e a c u t e",
-            
             # Somehow these should be said like this, according to the data
             "(": "o p e n i n g p a r e n t h e s i s",
             ")": "c l o s i n g p a r e n t h e s i s",
@@ -54,8 +53,7 @@ class Electronic:
             "~": "t i l d e",
             ";": "s e m i colon",
             "'": "s i n g l e q u o t e",
-            "\"": "d o u b l e q u o t e",
-
+            '"': "d o u b l e q u o t e",
             "0": "o",
             "1": "o n e",
             "2": "t w o",
@@ -75,9 +73,7 @@ class Electronic:
             ".": "dot",
             "#": "h a s h",
             "-": "d a s h",
-
             "é": "e a c u t e",
-            
             "(": "o p e n i n g p a r e n t h e s i s",
             ")": "c l o s i n g p a r e n t h e s i s",
             "_": "u n d e r s c o r e",
@@ -86,8 +82,7 @@ class Electronic:
             "~": "t i l d e",
             ";": "s e m i c o l o n",
             "'": "s i n g l e q u o t e",
-            "\"": "d o u b l e q u o t e",
-            
+            '"': "d o u b l e q u o t e",
             "0": "o",
             "1": "o n e",
             "2": "t w o",
@@ -102,7 +97,7 @@ class Electronic:
 
         # Regex to test for "https?://"
         self.data_http_regex = re.compile(r"https?://")
-        
+
         # Translation dict for sensible conversion
         self.sensible_trans_dict = {
             "/": "slash",
@@ -119,8 +114,7 @@ class Electronic:
             "~": "tilde",
             ";": "semicolon",
             "'": "single quote",
-            "\"": "double quote",
-
+            '"': "double quote",
             "0": "zero",
             "1": "one",
             "2": "two",
@@ -151,12 +145,12 @@ class Electronic:
 
         # Variable stating whether token starts with http(s)://
         # If the string starts with http(s)://, then we use "dot com"
-        # If the string does not start with http(s)://, then we use "dot c o m", 
+        # If the string does not start with http(s)://, then we use "dot c o m",
         # and generate space-pad everything except "dot"
         http = self.data_http_regex.match(token) != None
         # Get the translation dict to use for this token
         data_trans_dict = self.data_https_dict if http else self.data_no_https_dict
-        
+
         result_list = []
         c_index = 0
         while c_index < len(token):
@@ -166,19 +160,19 @@ class Electronic:
                     result_list.append("dot com")
                     c_index += len(".com")
                     continue
-            
+
             # Get the amount of subsequent numbers starting from this index
             offset = 0
             while c_index + offset < len(token) and token[c_index + offset].isdigit():
                 offset += 1
-            
+
             # 4.2 Either use cardinal or digit conversion for representing the numbers
             if offset == 2 and token[c_index] != "0":
-                text = self.cardinal.convert(token[c_index:c_index + offset])
+                text = self.cardinal.convert(token[c_index : c_index + offset])
                 result_list.append(" ".join([c for c in text if c != " "]))
                 c_index += offset
             elif offset > 0 and token[c_index] != "0" * offset:
-                text = self.digit.convert(token[c_index:c_index + offset])
+                text = self.digit.convert(token[c_index : c_index + offset])
                 result_list.append(" ".join([c for c in text if c != " "]))
                 c_index += offset
             else:
@@ -187,11 +181,11 @@ class Electronic:
                 if token[c_index] in data_trans_dict:
                     result_list.append(data_trans_dict[token[c_index]])
                 else:
-                    result_list.append(token[c_index])                    
+                    result_list.append(token[c_index])
                 c_index += 1
 
         return " ".join(result_list)
-    
+
     # This conversion actually makes sense, and would be useful, in contrast to the one used in the data
     def sensible_convert(self, token: str) -> str:
         # 1 Convert to lowercase
@@ -213,7 +207,7 @@ class Electronic:
                 result_list.append("dot com")
                 c_index += 4
                 continue
-            
+
             # 4.2 Convert character using sensible translation dictionary
             char = token[c_index]
             if char in self.sensible_trans_dict:
@@ -222,9 +216,9 @@ class Electronic:
                 result_list.append(char)
 
             c_index += 1
-        
+
         return " ".join(result_list)
-    
+
     def convert_hash_tag(self, token: str) -> str:
         # Parse the hash tag message
         out = "hash tag "

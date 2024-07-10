@@ -1,9 +1,9 @@
-
 from singleton_decorator import singleton
 
 import re
 
 from .Verbatim import Verbatim
+
 
 @singleton
 class Letters:
@@ -26,6 +26,7 @@ class Letters:
 
         Most of these cases include é, and are due to the difference between including or excluding the '.
     """
+
     def __init__(self):
         super().__init__()
         # Regex to filter out non letters and "&". Preserve accents.
@@ -38,13 +39,13 @@ class Letters:
         self.trans_dict = {
             "é": "e acute",
         }
-    
+
     def convert(self, token: str) -> str:
-        
+
         # 1 If input is a float, it is "nan". This should become "n a"
         if type(token) == float:
             return "n a"
-        
+
         # 2 Consider only the first word
         # Unless the token is of the form "x. y"
         if " " in token and ". " not in token:
@@ -55,7 +56,7 @@ class Letters:
             if token in self.trans_dict:
                 return self.trans_dict[token]
             return token
-        
+
         # Get custom suffix
         suffix = True
 
@@ -65,12 +66,17 @@ class Letters:
 
         # Remove non letters
         token = self.filter_regex.sub("", str(token))
-        
+
         # 5 Potentiall shrink token
         if suffix and len(token) >= 3 and token[-2:] in ("'s", "s'"):
             # Shrink token if token ends with 's or s'
             token = token[:-2]
-        elif suffix and token and token[-1] == "s" and any([c.isupper() for c in token[:-1]]):
+        elif (
+            suffix
+            and token
+            and token[-1] == "s"
+            and any([c.isupper() for c in token[:-1]])
+        ):
             # Check for a series of uppercase followed by an "s"
             token = token[:-1]
         else:
@@ -78,7 +84,9 @@ class Letters:
             suffix = False
 
         # 6 Result a string padded version of the list, while ignoring "'"
-        return " ".join([self.convert_char(char) for char in token if char != "'"]) + ("'s" if suffix else "")
+        return " ".join([self.convert_char(char) for char in token if char != "'"]) + (
+            "'s" if suffix else ""
+        )
 
     def convert_char(self, char: str) -> str:
         # If the character exists in the translation dict

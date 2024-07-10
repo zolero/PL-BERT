@@ -1,9 +1,9 @@
-
 from singleton_decorator import singleton
 
 import re
 
 from .Roman import Roman
+
 
 @singleton
 class Cardinal:
@@ -40,6 +40,7 @@ class Cardinal:
       - For example: "20" -> "two", in some situations.
       - These cases account to a total of 37 cases between the total 133744 CARDINAL tokens.
     """
+
     def __init__(self):
         super().__init__()
         # Regex to remove non digits (spaces, commas etc.), but keep "-"
@@ -51,24 +52,24 @@ class Cardinal:
 
         # List of suffixes
         self.scale_suffixes = [
-            "thousand", 
-            "million", 
-            "billion", 
-            "trillion", 
-            "quadrillion", 
-            "quintillion", 
-            "sextillion", 
-            "septillion", 
-            "octillion", 
-            "undecillion", 
-            "tredecillion", 
-            "quattuordecillion", 
-            "quindecillion", 
-            "sexdecillion", 
-            "septendecillion", 
-            "octodecillion", 
-            "novemdecillion", 
-            "vigintillion"
+            "thousand",
+            "million",
+            "billion",
+            "trillion",
+            "quadrillion",
+            "quintillion",
+            "sextillion",
+            "septillion",
+            "octillion",
+            "undecillion",
+            "tredecillion",
+            "quattuordecillion",
+            "quindecillion",
+            "sexdecillion",
+            "septendecillion",
+            "octodecillion",
+            "novemdecillion",
+            "vigintillion",
         ]
 
         # Translation dict for small numbers
@@ -108,13 +109,13 @@ class Cardinal:
             16: "sixteen",
             17: "seventeen",
             18: "eighteen",
-            19: "nineteen"
+            19: "nineteen",
         }
 
         # Roman conversion
         self.roman = Roman()
 
-    def _give_chunk(self, num_str: str, size:int = 3) -> str:
+    def _give_chunk(self, num_str: str, size: int = 3) -> str:
         # While string not empty
         while num_str:
             # yield `size` last elements
@@ -135,7 +136,7 @@ class Cardinal:
         # 5 Filter out non digits (but keep "-")
         token = self.filter_regex.sub("", token)
 
-        # 6 Prefix for final result. 
+        # 6 Prefix for final result.
         # Minus is prepended iff there is an uneven amount of "-" signs before the number.
         prefix = ""
         while len(token) > 0 and token[0] == "-":
@@ -157,12 +158,12 @@ class Cardinal:
                 chunk_text_list = []
                 # 10 Split up chunk into two sections
                 hundred, rest = chunk[-3:-2], chunk[-2:]
-                
+
                 # 11 Get "x hundred" prefix
                 if len(hundred) != 0 and int(hundred) != 0:
                     chunk_text_list.append(self.small_trans_dict[hundred])
                     chunk_text_list.append("hundred")
-                
+
                 # 12 Get text form of `rest`
                 if int(rest) in self.special_trans_dict:
                     chunk_text_list.append(self.special_trans_dict[int(rest)])
@@ -173,19 +174,19 @@ class Cardinal:
                         chunk_text_list.append(self.tens_trans_dict[rest[-2]])
                     if rest[-1] != "0":
                         chunk_text_list.append(self.small_trans_dict[rest[-1]])
-                
+
                 # 13 Add suffix based on depth. Eg million, billion.
                 # But only if something was added in front
                 if depth > 0 and len(chunk_text_list) > 0:
                     try:
-                        chunk_text_list.append(self.scale_suffixes[depth-1])
+                        chunk_text_list.append(self.scale_suffixes[depth - 1])
                     except IndexError:
                         # Number is too large to have a suffix for
                         pass
-                
+
                 # 14 Put the text from this chunk at the start of the text_list
                 text_list = chunk_text_list + text_list
-        
+
         # 15 Join the list elements with spaces
         token = " ".join(text_list)
 

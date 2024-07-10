@@ -1,7 +1,7 @@
-
 from singleton_decorator import singleton
 
 import re
+
 
 @singleton
 class Telephone:
@@ -24,15 +24,14 @@ class Telephone:
     "53-8 FNB MATIES" -> "five three sil eight sil f n b sil maties"
               instead of "five three sil eight sil f n b sil m a t i e s"
     """
+
     def __init__(self):
         super().__init__()
         # Translation dict
         self.trans_dict = {
             " ": "sil",
             "-": "sil",
-
             "x": "extension",
-
             "0": "o",
             "1": "one",
             "2": "two",
@@ -55,9 +54,13 @@ class Telephone:
         result_list = [self.trans_dict[c] if c in self.trans_dict else c for c in token]
 
         # 3 Remove multiple "sil"'s in a row. Also remove "sil" at the start.
-        result_list = [section for i, section in enumerate(result_list) if section != "sil" or (i - 1 >= 0 and result_list[i - 1] != "sil")]
+        result_list = [
+            section
+            for i, section in enumerate(result_list)
+            if section != "sil" or (i - 1 >= 0 and result_list[i - 1] != "sil")
+        ]
 
-        # 4 Iterate over result_list and replace multiple "o"s in a row with "hundred" or "thousand", 
+        # 4 Iterate over result_list and replace multiple "o"s in a row with "hundred" or "thousand",
         # but only if preceded with something other than "o" or "sil", and if succeeded with "sil" or the end of the list.
         i = 0
         while i < len(result_list):
@@ -65,8 +68,14 @@ class Telephone:
             while i + offset < len(result_list) and result_list[i + offset] == "o":
                 offset += 1
 
-            if (i + offset >= len(result_list) or result_list[i + offset] == "sil") and (i - 1 < 0 or result_list[i - 1] not in ("o", "sil")) and offset in (2, 3):
-                result_list[i : offset + i] = ["hundred"] if offset == 2 else ["thousand"]
+            if (
+                (i + offset >= len(result_list) or result_list[i + offset] == "sil")
+                and (i - 1 < 0 or result_list[i - 1] not in ("o", "sil"))
+                and offset in (2, 3)
+            ):
+                result_list[i : offset + i] = (
+                    ["hundred"] if offset == 2 else ["thousand"]
+                )
 
             i += 1
 

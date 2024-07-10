@@ -1,10 +1,10 @@
-
 from singleton_decorator import singleton
 
 import re
 
 from .Digit import Digit
 from .Cardinal import Cardinal
+
 
 @singleton
 class Decimal:
@@ -20,10 +20,11 @@ class Decimal:
     - 8 Otherwise add digit version of the decimal (if there is a decimal)
     - 9 If there is a number, add the cardinal of it in front
     - 10 Add the suffix in front, if one exists
- 
+
     Edge cases:
     3.66E-49 -> three point six six times ten to the minus fourty nine
     """
+
     def __init__(self):
         super().__init__()
         # Regex to detect input of the sort "x.y" or ".y"
@@ -37,30 +38,30 @@ class Decimal:
         self.digit = Digit()
         # List of potential suffixes
         self.suffixes = [
-            "thousand", 
-            "million", 
-            "billion", 
-            "trillion", 
-            "quadrillion", 
-            "quintillion", 
-            "sextillion", 
-            "septillion", 
-            "octillion", 
-            "undecillion", 
-            "tredecillion", 
-            "quattuordecillion", 
-            "quindecillion", 
-            "sexdecillion", 
-            "septendecillion", 
-            "octodecillion", 
-            "novemdecillion", 
-            "vigintillion"
+            "thousand",
+            "million",
+            "billion",
+            "trillion",
+            "quadrillion",
+            "quintillion",
+            "sextillion",
+            "septillion",
+            "octillion",
+            "undecillion",
+            "tredecillion",
+            "quattuordecillion",
+            "quindecillion",
+            "sexdecillion",
+            "septendecillion",
+            "octodecillion",
+            "novemdecillion",
+            "vigintillion",
         ]
         # Regular expression to detect the suffixes
         self.suffix_regex = re.compile(f" *({'|'.join(self.suffixes)})")
         # Regular expression for xEy
         self.e_suffix_regex = re.compile(r" *E(-?\d+)")
-    
+
     def convert(self, token: str) -> str:
 
         # 1 Filter out commas
@@ -120,5 +121,5 @@ class Decimal:
 
         # 11 Number may be empty. In this case, avoid it.
         result = " ".join(result_list)
-        
+
         return result

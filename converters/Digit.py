@@ -1,7 +1,7 @@
-
 from singleton_decorator import singleton
 
 import re
+
 
 @singleton
 class Digit:
@@ -16,6 +16,7 @@ class Digit:
     007 -> double o 7
     while 003 -> o o 3
     """
+
     def __init__(self):
         super().__init__()
         # Regex used to filter out non digits
@@ -31,7 +32,7 @@ class Digit:
             "6": "six",
             "7": "seven",
             "8": "eight",
-            "9": "nine"
+            "9": "nine",
         }
 
     def convert(self, token: str) -> str:

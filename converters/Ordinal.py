@@ -1,10 +1,10 @@
-
 from singleton_decorator import singleton
 
 import re
 
 from .Roman import Roman
 from .Cardinal import Cardinal
+
 
 @singleton
 class Ordinal:
@@ -21,7 +21,7 @@ class Ordinal:
     II -> (sometimes) second
     II -> (sometimes) the second
     II's -> (the) second's
-    
+
     Note:
     Values are always:
     - Roman numerals (including dots or suffixed with 's)
@@ -34,6 +34,7 @@ class Ordinal:
     When input is not of the aforementioned forms
     Difference between edge case 1 and edge case 2. The prefix "the" is always prepended when there is a roman numeral.
     """
+
     def __init__(self):
         super().__init__()
         # Regex to filter out commas, spaces and ordinal indicators
@@ -57,7 +58,6 @@ class Ordinal:
             "seven": "seventh",
             "eight": "eighth",
             "nine": "ninth",
-
             "ten": "tenth",
             "twenty": "twentieth",
             "thirty": "thirtieth",
@@ -67,7 +67,6 @@ class Ordinal:
             "seventy": "seventieth",
             "eighty": "eightieth",
             "ninety": "ninetieth",
-
             "eleven": "eleventh",
             "twelve": "twelfth",
             "thirteen": "thirteenth",
@@ -77,7 +76,6 @@ class Ordinal:
             "seventeen": "seventeenth",
             "eighteen": "eighteenth",
             "nineteen": "nineteenth",
-
             "hundred": "hundredth",
             "thousand": "thousandth",
             "million": "millionth",
@@ -96,17 +94,17 @@ class Ordinal:
             "septendecillion": "septendecillionth",
             "octodecillion": "octodecillionth",
             "novemdecillion": "novemdecillionth",
-            "vigintillion": "vigintillionth"
+            "vigintillion": "vigintillionth",
         }
-    
+
     def convert(self, token: str) -> str:
-        
+
         # 1 Filter out commas, spaces and ordinal indicators
         token = self.filter_regex.sub("", token)
 
         prefix = ""
         suffix = ""
-        # 2 Check if the token is a roman numeral. 
+        # 2 Check if the token is a roman numeral.
         # If it is, convert token to a string of the integer the roman numeral represents.
         # Furthermore, update the suffix with 's if applicable
         if self.roman.check_if_roman(token):
@@ -114,7 +112,7 @@ class Ordinal:
             if not token.endswith(("th", "nd", "st", "rd")):
                 prefix = "the"
             token, suffix = self.roman.convert(token)
-        
+
         else:
             # 4 Otherwise, we should be dealing with Num + "th", "nd", "st" or "rd".
             match = self.standard_case_regex.fullmatch(token)
@@ -122,7 +120,7 @@ class Ordinal:
                 # Set token to the number to convert, and add suffix "s" if applicable
                 token = match.group(1)
                 suffix = match.group(3)
-        
+
         # 5 Token should now be a string representing some integer
         # Convert the number to cardinal style, and convert the last word to
         # the ordinal style using self.trans_denominator.
